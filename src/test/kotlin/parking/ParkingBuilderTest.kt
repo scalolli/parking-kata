@@ -21,4 +21,13 @@ class ParkingBuilderTest {
             .build()
         assertEquals(8, parking.getAvailableBays())
     }
+
+    @Test
+    fun testBuildParkingWithDisabledSlot() {
+        val parking = ParkingBuilder()
+            .withSquareSize(2)
+            .withDisabledBay(2)
+            .build()
+        assertEquals(4, parking.getAvailableBays())
+    }
 }
