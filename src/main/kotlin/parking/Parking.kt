@@ -6,7 +6,7 @@ import kotlin.math.pow
 private data class ParkingBay(val bayNumber: Int, val isDisabledBay: Boolean, val car: Char?)
 
 class Parking(
-  private val squareSize: Int,
+  squareSize: Int,
   private val pedestrianExits: List<Int>,
   private val disabledBays: List<Int>
 ) {
@@ -22,7 +22,8 @@ class Parking(
 
   fun parkCar(car: Char): Int {
     return when (car) {
-      'C' -> {
+      'C',
+      'M' -> {
         val emptyBays = parkingBays.filter { it.car != null || !it.isDisabledBay }
         val bays =
           pedestrianExits

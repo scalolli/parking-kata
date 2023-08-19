@@ -29,6 +29,8 @@ class ParkingTest {
 
   @Test
   fun testParkCarVehicleTypeM() {
-    assertEquals(7, getParking().parkCar('M'))
+    val parking = getParking()
+    assertEquals(7, parking.parkCar('M'))
+    assertEquals(22, parking.getAvailableBays())
   }
 }
