@@ -1,15 +1,5 @@
 package parking
 
-import kotlin.math.pow
-
-
-class Parking(
-    private val squareSize: Int,
-    private val pedestrianExits: List<Int>,
-    private val disabledBays: List<Int>
-) {
-    fun getAvailableBays(): Int = squareSize.toDouble().pow(2.toDouble()).toInt() - (pedestrianExits.size)
-}
 
 class ParkingBuilder {
     private var squareSize: Int = 0
