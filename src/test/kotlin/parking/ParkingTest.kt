@@ -33,4 +33,24 @@ class ParkingTest {
     assertEquals(7, parking.parkCar('M'))
     assertEquals(22, parking.getAvailableBays())
   }
+
+  @Test
+  fun testParkCarTwoVehicules() {
+    val parking = getParking()
+    assertEquals(7, parking.parkCar('C'))
+    assertEquals(22, parking.getAvailableBays())
+    assertEquals(9, parking.parkCar('M'))
+    assertEquals(21, parking.getAvailableBays())
+  }
+
+  @Test
+  fun testParkCarDisabled() {
+    val parking = getParking()
+    assertEquals(10, parking.parkCar('D'))
+    assertEquals(22, parking.getAvailableBays())
+    assertEquals(5, parking.parkCar('D'))
+    assertEquals(21, parking.getAvailableBays())
+    assertEquals(-1, parking.parkCar('D'))
+    assertEquals(21, parking.getAvailableBays())
+  }
 }
