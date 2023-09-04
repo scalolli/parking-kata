@@ -13,7 +13,7 @@ class Parking(
     private val parkingBays = mutableListOf<ParkingBay>()
 
     init {
-        (1..squareSize.toDouble().pow(2.toDouble()).toInt()).forEach { index ->
+        (0 until squareSize.toDouble().pow(2.toDouble()).toInt()).forEach { index ->
             if (!pedestrianExits.contains(index)) {
                 parkingBays.add(ParkingBay(index, disabledBays.contains(index), null))
             }
@@ -26,7 +26,7 @@ class Parking(
         return when (car) {
             'C',
             'M' -> {
-                val emptyBays = parkingBays.filter { it.car != null || !it.isDisabledBay }
+                val emptyBays = parkingBays.filter { it.car == null && !it.isDisabledBay }
                 parkCar(emptyBays, car)
             }
 

@@ -3,6 +3,7 @@ package parking
 import kotlin.test.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import kotlin.test.Ignore
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
@@ -38,7 +39,7 @@ class ParkingTest {
   }
 
   @Test
-  fun testParkCarTwoVehicules() {
+  fun testParkCarTwoVehicles() {
     val parking = getParking()
     assertEquals(7, parking.parkCar('C'))
     assertEquals(22, parking.getAvailableBays())
@@ -68,5 +69,15 @@ class ParkingTest {
     val secondCarBayIndex = parking.parkCar('D')
     assertTrue(parking.unParkCar(secondCarBayIndex))
     assertEquals(23, parking.getAvailableBays())
+  }
+
+  @Test
+  @Ignore
+  fun testCarParkDisplay() {
+
+    val parking = getParking()
+    val parkingHumanReadable =
+      """UUUUU\n""" +
+      """@"""".trimIndent()
   }
 }
