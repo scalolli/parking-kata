@@ -2,6 +2,9 @@ package parking
 
 import kotlin.test.assertEquals
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 class ParkingTest {
 
@@ -52,5 +55,18 @@ class ParkingTest {
     assertEquals(21, parking.getAvailableBays())
     assertEquals(-1, parking.parkCar('D'))
     assertEquals(21, parking.getAvailableBays())
+  }
+
+  @Test
+  fun testUnParkCar() {
+    val parking = getParking()
+    val firstCarBayIndex = parking.parkCar('C')
+    assertTrue(parking.unParkCar(firstCarBayIndex))
+    assertFalse(parking.unParkCar(-1))
+    assertEquals(23, parking.getAvailableBays())
+
+    val secondCarBayIndex = parking.parkCar('D')
+    assertTrue(parking.unParkCar(secondCarBayIndex))
+    assertEquals(23, parking.getAvailableBays())
   }
 }
