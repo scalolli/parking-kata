@@ -122,7 +122,7 @@ class Parking(
 
     sealed class Bay(open val bayNumber: Int)
     sealed class ParkingBay(override val bayNumber: Int, open var car: Char?) : Bay(bayNumber)
-    data class DisabledParkingBay(override val bayNumber: Int, override var car: Char?) : ParkingBay(bayNumber, car)
-    data class RegularParkingBay(override val bayNumber: Int, override var car: Char?) : ParkingBay(bayNumber, car)
-    data class Exit(override val bayNumber: Int) : Bay(bayNumber)
+    class DisabledParkingBay(override val bayNumber: Int, override var car: Char?) : ParkingBay(bayNumber, car)
+    class RegularParkingBay(override val bayNumber: Int, override var car: Char?) : ParkingBay(bayNumber, car)
+    class Exit(override val bayNumber: Int) : Bay(bayNumber)
 }
