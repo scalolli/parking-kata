@@ -37,7 +37,7 @@ class Parking(
     private val parkingBays = mutableListOf<Bay>()
 
     init {
-        (0 until squareSize.toDouble().pow(2.toDouble()).toInt()).forEach { index ->
+        (0 until totalNumberOfParkingBays()).forEach { index ->
             if (pedestrianExits.contains(index)) {
                 parkingBays.add(Exit(index))
             } else if (disabledBays.contains(index)) {
@@ -46,6 +46,8 @@ class Parking(
                 parkingBays.add(RegularParkingBay(index, Empty))
         }
     }
+
+    private fun totalNumberOfParkingBays() = squareSize.toDouble().pow(2.toDouble()).toInt()
 
     fun getAvailableBays(): Int = getEmptyParkingBays().size
 
