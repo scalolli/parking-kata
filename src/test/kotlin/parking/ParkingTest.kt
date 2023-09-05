@@ -72,15 +72,16 @@ class ParkingTest {
     }
 
     @Test
-    @Ignore
     fun testCarParkDisplay() {
         val parking = getParking()
         val parkingHumanReadable =
-            """UUUUU\n""" +
-                    """@U=UU\n"""" +
-                    """@U=UU\n""" +
-                    """UUUUU\n""" +
-                    """UUUUU\n"""
+            """UUUUU
+              |@UU=U
+              |@U=UU
+              |UUUUU
+              |UUUUU""".trimMargin()
+        println(parkingHumanReadable)
+        println(parking.toString())
         assertEquals(parkingHumanReadable, parking.toString())
     }
 }

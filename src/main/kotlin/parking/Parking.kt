@@ -4,7 +4,7 @@ import kotlin.math.abs
 import kotlin.math.pow
 
 class Parking(
-    squareSize: Int,
+    private val squareSize: Int,
     private val pedestrianExits: List<Int>,
     private val disabledBays: List<Int>
 ) {
@@ -104,21 +104,27 @@ class Parking(
         } != null
     }
 
-//    todo: WIP
-//    override fun toString(): String {
-//        val stringBuffer = StringBuffer()
-//
-//        parkingBays.withIndex().forEach { it ->
-//            when (it.value.car) {
-//                'C',
-//                'M' -> stringBuffer.append(it.value.car!!)
-//
-//            }
-//
-//        }
-//
-//        return super.toString()
-//    }
+    override fun toString(): String {
+        val stringBuffer = StringBuffer()
+
+        parkingBays.withIndex().forEach { (index, bay) ->
+            when (bay) {
+                is RegularParkingBay ->
+                    bay.car?.let { stringBuffer.append(it) } ?: stringBuffer.append("U")
+
+                is DisabledParkingBay ->
+                    bay.car?.let { stringBuffer.append(it) } ?: stringBuffer.append("@")
+
+                is Exit ->
+                    stringBuffer.append("=")
+            }
+
+            if (index != 0 && index != (parkingBays.size - 1) && (index + 1) % squareSize == 0)
+                stringBuffer.append("\n")
+        }
+
+        return stringBuffer.toString()
+    }
 
     sealed class Bay(open val bayNumber: Int)
     sealed class ParkingBay(override val bayNumber: Int, open var car: Char?) : Bay(bayNumber)
