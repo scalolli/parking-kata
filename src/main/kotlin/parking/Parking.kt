@@ -9,10 +9,30 @@ class Parking(
     private val disabledBays: List<Int>
 ) {
     sealed class Bay(open val bayNumber: Int)
-    sealed class ParkingBay(override val bayNumber: Int, open var car: Char?) : Bay(bayNumber)
-    private class DisabledParkingBay(override val bayNumber: Int, override var car: Char?) : ParkingBay(bayNumber, car)
-    private class RegularParkingBay(override val bayNumber: Int, override var car: Char?) : ParkingBay(bayNumber, car)
+    sealed class ParkingBay(override val bayNumber: Int, open val state: ParkingBayState) : Bay(bayNumber)
+    private data class DisabledParkingBay(override val bayNumber: Int, override val state: ParkingBayState) :
+        ParkingBay(bayNumber, state) {
+        override fun toString() =
+            when (state) {
+                is Empty -> "@"
+                is Occupied -> state.car.toString()
+            }
+    }
+
+    private data class RegularParkingBay(override val bayNumber: Int, override val state: ParkingBayState) :
+        ParkingBay(bayNumber, state) {
+        override fun toString() =
+            when (state) {
+                is Empty -> "U"
+                is Occupied -> state.car.toString()
+            }
+    }
+
     private class Exit(override val bayNumber: Int) : Bay(bayNumber)
+
+    sealed class ParkingBayState
+    object Empty : ParkingBayState()
+    data class Occupied(val car: Char) : ParkingBayState()
 
     private val parkingBays = mutableListOf<Bay>()
 
@@ -21,43 +41,28 @@ class Parking(
             if (pedestrianExits.contains(index)) {
                 parkingBays.add(Exit(index))
             } else if (disabledBays.contains(index)) {
-                parkingBays.add(DisabledParkingBay(index, null))
+                parkingBays.add(DisabledParkingBay(index, Empty))
             } else
-                parkingBays.add(RegularParkingBay(index, null))
+                parkingBays.add(RegularParkingBay(index, Empty))
         }
     }
 
-    fun getAvailableBays(): Int =
-        parkingBays.filter {
-            when (it) {
-                is ParkingBay -> it.car == null
-                else -> false
-            }
-        }.size
+    fun getAvailableBays(): Int = getEmptyParkingBays().size
 
     fun parkCar(car: Char): Int {
         return when (car) {
-            'C',
-            'M' -> {
-                val emptyBays = getEmptyParkingBays()
-                parkCar(emptyBays, car)
-            }
-
-            'D' -> {
-                val emptyBays = getEmptyDisabledParkingBays()
-                if (emptyBays.isNotEmpty()) parkCar(emptyBays, car) else -1
-            }
-
+            'C', 'M' -> parkCar(getEmptyParkingBays(), car)
+            'D' -> if (getEmptyDisabledParkingBays().isNotEmpty()) parkCar(getEmptyDisabledParkingBays(), car) else -1
             else -> -1
         }
     }
 
     private fun getEmptyParkingBays(): List<ParkingBay> {
-        return parkingBays.filter { it is ParkingBay && it.car == null }.map { it as ParkingBay }
+        return parkingBays.filter { it is ParkingBay && it.state is Empty }.map { it as ParkingBay }
     }
 
     private fun getEmptyDisabledParkingBays(): List<ParkingBay> {
-        return parkingBays.filter { it is DisabledParkingBay && it.car == null }.map { it as ParkingBay }
+        return parkingBays.filter { it is DisabledParkingBay && it.state is Empty }.map { it as ParkingBay }
     }
 
     private fun parkCar(emptyBays: List<ParkingBay>, car: Char): Int {
@@ -66,21 +71,36 @@ class Parking(
                 .flatMap { exit -> emptyBays.map { bay -> abs(bay.bayNumber - exit) to bay } }
                 .sortedBy { it.first }
         val bay = suitableBaysOrderedByClosetToExit.firstOrNull()?.second
-        bay?.car = car
+        bay?.let {
+            parkingBays.remove(it)
+            val updatedBay = when (it) {
+                is DisabledParkingBay -> it.copy(state = Occupied(car))
+                is RegularParkingBay -> it.copy(state = Occupied(car))
+            }
+            parkingBays.add(updatedBay)
+        }
+
         return bay?.bayNumber ?: -1
     }
 
     fun unParkCar(bayNumber: Int): Boolean {
         val foundBay = parkingBays.find { it is ParkingBay && it.bayNumber == bayNumber } as? ParkingBay
-        foundBay?.car = null
+        foundBay?.let {
+            parkingBays.remove(it)
+            val updatedBay = when (it) {
+                is DisabledParkingBay -> it.copy(state = Empty)
+                is RegularParkingBay -> it.copy(state = Empty)
+            }
+            parkingBays.add(updatedBay)
+        }
         return foundBay != null
     }
 
     override fun toString(): String {
         return parkingBays.mapIndexed { index, bay ->
             val stringPart = when (bay) {
-                is RegularParkingBay -> bay.car?.toString() ?: "U"
-                is DisabledParkingBay -> bay.car?.toString() ?: "@"
+                is RegularParkingBay -> bay.toString()
+                is DisabledParkingBay -> bay.toString()
                 is Exit -> "="
             }
 
