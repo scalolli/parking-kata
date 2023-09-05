@@ -80,8 +80,6 @@ class ParkingTest {
               |@U=UU
               |UUUUU
               |UUUUU""".trimMargin()
-        println(parkingHumanReadable)
-        println(parking.toString())
         assertEquals(parkingHumanReadable, parking.toString())
     }
 }
